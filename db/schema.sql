@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS 4travel_db;
+CREATE DATABASE 4travel_db;
