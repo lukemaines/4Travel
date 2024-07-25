@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
     const trips = await Trip.findAll();
     console.log(trips);
     res.render('trips', {
-      trips,
+      trips: trips.map(trip => trip.toJSON()),
     });
   } catch (err) {
     console.error(err);

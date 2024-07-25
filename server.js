@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const sequelize = require('./config/connection');
+const exphbs = require('express-handlebars');
+const helpers = require('./utils/helpers')
 require('dotenv').config();
 
 const app = express();
@@ -9,10 +11,11 @@ const app = express();
 // Bodyparser
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const hbs = exphbs.create({ helpers });
 // Set up Handlebars
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
+// app.set('views', path.join(__dirname, 'views'));
 
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')));
