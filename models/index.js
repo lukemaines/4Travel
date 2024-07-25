@@ -1,4 +1,5 @@
 const User = require('./User');
+const Trip = require('./Trip')
 
 // eager loading table relationships between user and trips tables
 User.hasMany(Trip, {

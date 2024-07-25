@@ -23,7 +23,7 @@ User.init(
             type: DataTypes.STRING,
             unique: true,
             validate: {
-                notNull: true,
+                allowNull: false,
             },
         },
         email: {
@@ -31,13 +31,13 @@ User.init(
             unique: true,
             validate: {
                 isEmail: true,
-                notNull: true,
+                allowNull: false,
             },
         },
         password: {
             type: DataTypes.STRING,
             validate: {
-                notNull: true,
+                allowNull: false,
             },
         },
 
