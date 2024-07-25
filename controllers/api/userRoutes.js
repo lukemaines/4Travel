@@ -58,4 +58,29 @@ router.post('/logout', (req, res) => {
   }
 });
 
+router.get('/cities/:city_name', async (req, res) => {
+  const { city_name } = req.params;
+
+  try {
+    const city = await City.findOne({ where: { name: city_name } });
+
+    if (!city) {
+      return res.status(404).send('City not found');
+    }
+
+    const meals = await Meal.findAll({ where: { city_id: city.id } });
+    const transportation = await Transportation.findAll({ where: { city_id: city.id } });
+
+    res.json({
+      name: city.name,
+      country: city.country,
+      meals,
+      transportation
+    });
+  } catch (error) {
+    console.error('Error retrieving data from database:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 module.exports = router;
