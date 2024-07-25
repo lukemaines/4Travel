@@ -35,6 +35,9 @@ User.init(
         len: [8],
       },
     },
+    trips: {
+      type: DataTypes.
+    }
   },
   {
     hooks: {

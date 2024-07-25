@@ -1,10 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/connection');
-
+// referencing the trip table
+const Trip = require('./Trip'); 
+// function for checking the password with bcrypt for hash vs. typed password
 class User extends Model {
-    checkPassword(loginPw) {
-        return bcrypt.compareSync(loginPw, this.password); 
+    checkPassword(userPassword) {
+        return bcrypt.compareSync(userPassword, this.password); 
     }
 }
 
@@ -40,7 +42,7 @@ User.init(
         },
 
     },
-
+// hooks for executing the hash on the password when it's either created or updated
     {   hooks: {
             beforeCreate: async (newUserData) => {
                 newUserData.password = await bcrypt.hash(newUserData.password, 10)   
@@ -58,6 +60,15 @@ User.init(
         underscored: true,
         modelName: 'user',
     }
-)
+);
+// eager loading table relationships between user and trips tables
+User.hasMany(Trip, {
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',
+});
+
+Trip.belongsTo(User, {
+    foreignKey: 'userId',
+});
 
 module.exports = User;
