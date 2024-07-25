@@ -1,12 +1,14 @@
 const User = require('./User');
 
-// User.hasMany(Project, {
-//   foreignKey: 'user_id',
-//   onDelete: 'CASCADE'
-// });
+// eager loading table relationships between user and trips tables
+User.hasMany(Trip, {
+    foreignKey: 'userId',
+    // the user's trips will also be deleted if we delete the user
+    onDelete: 'CASCADE',
+});
 
-// Project.belongsTo(User, {
-//   foreignKey: 'user_id'
-// });
+Trip.belongsTo(User, {
+    foreignKey: 'userId',
+});
 
 module.exports = { User };
