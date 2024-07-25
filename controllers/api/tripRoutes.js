@@ -1,45 +1,46 @@
-const router = require('express').Router();
+const express = require('express');
 const { Trip } = require('../../models');
 
-// POST create trip
-router.post('/create', ensureAuthenticated, async (req, res) => {
-    const { trip_name, trip_origin, destination, start_date, end_date, budget } = req.body;
-    
-    try {
-      await Trip.create({
-        user_id: req.user.id,
-        trip_name,
-        trip_origin,
-        destination,
-        start_date,
-        end_date,
-        budget,
-      });
-       res.redirect('/trips');
-    } catch (err) {
-      console.error(err);
-      res.render('plan_trip', {
-        user: req.user,
-        error: 'Failed to create trip. Please try again.',
-      });
-    }
-  });
+const router = express.Router();
 
-// GET user's trips
+router.get('/plan', (req, res) => {
+  res.render('plan_trip');
+});
+
+router.post('/create', async (req, res) => {
+  const { trip_name, trip_origin, destination, start_date, end_date, budget } = req.body;
+
+  try {
+    await Trip.create({
+      trip_name,
+      trip_origin,
+      destination,
+      start_date,
+      end_date,
+      budget,
+    });
+    res.redirect('/api/trips'); // Updated redirect URL
+  } catch (err) {
+    console.error(err);
+    res.render('plan_trip', {
+      error: 'Failed to create trip. Please try again.',
+    });
+  }
+});
+
 router.get('/', async (req, res) => {
-    try {
-      const trips = await Trip.findAll({ where: { user_id: req.user.id } });
-      res.render('trips', {
-        user: req.user,
-        trips,
-      });
-    } catch (err) {
-      console.error(err);
-      res.render('trips', {
-        user: req.user,
-        error: 'Failed to load trips. Please try again.',
-      });
-    }
+  try {
+    const trips = await Trip.findAll();
+    console.log(trips);
+    res.render('trips', {
+      trips,
+    });
+  } catch (err) {
+    console.error(err);
+    res.render('trips', {
+      error: 'Failed to load trips. Please try again.',
+    });
+  }
 });
 
 module.exports = router;

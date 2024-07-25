@@ -1,12 +1,20 @@
-const User = require('./User');
+const Sequelize = require('sequelize');
+const sequelize = require('../config/connection');
 
-// User.hasMany(Project, {
-//   foreignKey: 'user_id',
-//   onDelete: 'CASCADE'
-// });
+const Trip = require('./Trip');
 
-// Project.belongsTo(User, {
-//   foreignKey: 'user_id'
-// });
+const db = {
+  Trip,
+};
 
-module.exports = { User };
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+
