@@ -31,7 +31,6 @@ router.post('/create', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const trips = await Trip.findAll();
-    console.log(trips);
     res.render('trips', {
       trips: trips.map(trip => trip.toJSON()),
     });
