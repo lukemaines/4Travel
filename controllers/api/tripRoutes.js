@@ -19,7 +19,7 @@ router.post('/create', async (req, res) => {
       end_date,
       budget,
     });
-    res.redirect('/api/trips'); // Updated redirect URL
+    res.redirect('/api/trips');
   } catch (err) {
     console.error(err);
     res.render('plan_trip', {
