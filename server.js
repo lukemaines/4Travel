@@ -1,38 +1,56 @@
-require('dotenv').config();
+
 const express = require('express');
-const session = require('express-session');
-const { sequelize } = require('./models');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const exphbs = require('express-handlebars');
-const apiRoutes = require('./routes/apiRoutes');
+const path = require('path');
+const session = require('express-session');
+require('dotenv').config();
+const db = require('./models');
+
+
+const sequelize = require('./config/connection');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+const { City, Meal, Transportation } = require('./models');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.engine('handlebars', exphbs());
+// Setup Handlebars.js as template engine
+app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
+  cookie: {},
+  resave: false,
+  saveUninitialized: true,
   store: new SequelizeStore({
     db: sequelize
-  }),
-  resave: false,
-  saveUninitialized: false
+  })
 }));
 
-app.use('/api', apiRoutes);
+// Routes
+app.use('/api', require('./controllers/apiRoutes'));
+app.use('/', require('./controllers/viewRoutes'));
 
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// Sync database and start server
+const syncDatabase = async () => {
+  try {
+    // Sync the City table first
+    await City.sync({ force: false });
+    // Then sync the Meal and Transportation tables
+    await Meal.sync({ force: false });
+    await Transportation.sync({ force: false });
 
-sequelize.sync().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-});
+    app.listen(PORT, () => console.log(`Now listening on PORT ${PORT}`));
+  } catch (error) {
+    console.error('Failed to sync database:', error);
+  }
+};
+
+syncDatabase();

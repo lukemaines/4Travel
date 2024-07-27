@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const { City } = require('../models');
+const https = require('https');
+const { City, Meal, Transportation } = require('../models');
 
-router.post('/cities', async (req, res) => {
+exports.getCityData = async (req, res) => {
   const { city_name, country_name } = req.body;
   const url = `https://cost-of-living-and-prices.p.rapidapi.com/prices?city_name=${encodeURIComponent(city_name)}&country_name=${encodeURIComponent(country_name)}`;
+
   const options = {
     method: 'GET',
     headers: {
@@ -13,10 +13,29 @@ router.post('/cities', async (req, res) => {
     }
   };
 
+  const fetchData = () => {
+    return new Promise((resolve, reject) => {
+      const req = https.request(url, options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+
+        res.on('end', () => {
+          resolve(JSON.parse(data));
+        });
+      });
+
+      req.on('error', (error) => {
+        reject(error);
+      });
+
+      req.end();
+    });
+  };
+
   try {
-    const fetch = (await import('node-fetch')).default;
-    const response = await fetch(url, options);
-    const result = await response.json();
+    const result = await fetchData();
 
     const meals = result.prices
       .filter(item => item.category_name === 'Restaurants')
@@ -44,6 +63,4 @@ router.post('/cities', async (req, res) => {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-});
-
-module.exports = router;
+};

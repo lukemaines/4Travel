@@ -1,0 +1,20 @@
+<h2>Results</h2>
+<ul>
+  {{#each cities}}
+    <li>
+      <h3>{{this.name}}, {{this.country}}</h3>
+      <h4>Meals</h4>
+      <ul>
+        {{#each this.Meals}}
+          <li>{{this.item_name}}: {{this.average_price}} {{this.currency}}</li>
+        {{/each}}
+      </ul>
+      <h4>Transportation</h4>
+      <ul>
+        {{#each this.Transportation}}
+          <li>{{this.item_name}}: {{this.average_price}} {{this.currency}}</li>
+        {{/each}}
+      </ul>
+    </li>
+  {{/each}}
+</ul>

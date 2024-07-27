@@ -2,20 +2,24 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
-class City extends Model {}
+class Meal extends Model {}
 
-City.init({
-  name: {
+Meal.init({
+  item_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  country: {
+  average_price: {
+    type: DataTypes.FLOAT,
+    allowNull: false
+  },
+  currency: {
     type: DataTypes.STRING,
     allowNull: false
   }
 }, {
   sequelize,
-  modelName: 'City'
+  modelName: 'Meal'
 });
 
-module.exports = City;
+module.exports = Meal;

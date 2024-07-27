@@ -1,32 +1,44 @@
 const Sequelize = require('sequelize');
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
-const sequelize = new Sequelize(process.env.DATABASE_URL, config);
-const db = {};
-
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+const sequelize = require('../config/connection'); // Path to your connection configuration
 
 // Import models
-db.City = require('./City')(sequelize, Sequelize);
+const City = require('./City');
+const Meal = require('./Meal');
+const Transportation = require('./Transportation');
+
+// Initialize models with model attributes and sequelize instance
+City.init({
+  // Define City attributes here
+}, {
+  sequelize,
+  modelName: 'City'
+});
+
+Meal.init({
+  // Define Meal attributes here
+}, {
+  sequelize,
+  modelName: 'Meal'
+});
+
+Transportation.init({
+  // Define Transportation attributes here
+}, {
+  sequelize,
+  modelName: 'Transportation'
+});
+
+// Define associations
+City.hasMany(Meal, { foreignKey: 'city_id', onDelete: 'CASCADE' });
+Meal.belongsTo(City, { foreignKey: 'city_id' });
+
+// Export models and sequelize instance
+const db = {
+  City,
+  Meal,
+  Transportation,
+  sequelize,
+  Sequelize
+};
 
 module.exports = db;
-// models/index.js
-// const { Sequelize } = require('sequelize');
-// const sequelize = require('../config/connection');
-
-// const db = {};
-
-// db.Sequelize = Sequelize;
-// db.sequelize = sequelize;
-
-// db.City = require('./City')(sequelize);
-// db.Meal = require('./Meal')(sequelize);
-// db.Transportation = require('./Transportation')(sequelize);
-
-// db.City.hasMany(db.Meal, { foreignKey: 'city_id' });
-// db.City.hasMany(db.Transportation, { foreignKey: 'city_id' });
-// db.Meal.belongsTo(db.City, { foreignKey: 'city_id' });
-// db.Transportation.belongsTo(db.City, { foreignKey: 'city_id' });
-
-// module.exports = db;
