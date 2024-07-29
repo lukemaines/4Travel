@@ -7,16 +7,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function getAttractions(destination, tripId) {
-    fetch(`/api/trips/attractions?destination=${encodeURIComponent(destination)}`)
-        .then(response => response.json())
-        .then(data => {
-            const poiList = document.querySelector(`#poi-${tripId} ul`);
-            data.forEach(attraction => {
-                const li = document.createElement('li');
-                li.textContent = attraction.name;
-                poiList.appendChild(li);
-            });
-        })
-        .catch(error => console.error('Error fetching attractions:', error));
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+async function getAttractions(destination, tripId) {
+    try {
+        await delay(1000); // Introduce a 1-second delay before making the request
+
+        const response = await fetch(`/api/trips/attractions?destination=${encodeURIComponent(destination)}`);
+        if (!response.ok) {
+            throw new Error(`Error fetching attractions: ${response.statusText} (${response.status})`);
+        }
+
+        const data = await response.json();
+        const poiList = document.querySelector(`#poi-${tripId} ul`);
+        poiList.innerHTML = ''; // Clear any existing content
+
+        data.forEach(attraction => {
+            const li = document.createElement('li');
+            li.textContent = attraction.name;
+            poiList.appendChild(li);
+        });
+    } catch (error) {
+        console.error(error);
+        const poiList = document.querySelector(`#poi-${tripId} ul`);
+        poiList.innerHTML = '<li>Error fetching attractions. Please try again later.</li>';
+    }
+}
+
+
