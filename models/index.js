@@ -1,15 +1,17 @@
+const Sequelize = require('sequelize');
+const sequelize = require('../config/connection');
+
 const User = require('./User');
-const Trip = require('./Trip')
 
 // eager loading table relationships between user and trips tables
-User.hasMany(Trip, {
-    foreignKey: 'userId',
-    // the user's trips will also be deleted if we delete the user
-    onDelete: 'CASCADE',
-});
+// User.hasMany(Trip, {
+//     foreignKey: 'userId',
+//     // the user's trips will also be deleted if we delete the user
+//     onDelete: 'CASCADE',
+// });
 
-Trip.belongsTo(User, {
-    foreignKey: 'userId',
-});
+// Trip.belongsTo(User, {
+//     foreignKey: 'userId',
+// });
 
 module.exports = { User };

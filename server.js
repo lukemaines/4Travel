@@ -1,46 +1,44 @@
-const path = require('path');
 const express = require('express');
-const session = require('express-session');
-const exphbs = require('express-handlebars');
-const routes = require('./controllers');
-const helpers = require('./utils/helpers');
-
+const bodyParser = require('body-parser');
+const path = require('path');
 const sequelize = require('./config/connection');
+const exphbs = require('express-handlebars');
+const helpers = require('./utils/helpers')
+const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
-// Set up Handlebars.js engine with custom helpers
+// Bodyparser
+app.use(bodyParser.urlencoded({ extended: false }));
+
 const hbs = exphbs.create({ helpers });
+// Set up Handlebars
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+// app.set('views', path.join(__dirname, 'views'));
+
+// Static folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 const sess = {
-  secret: 'Super secret secret',
-  cookie: {
-    maxAge: 300000,
-    httpOnly: true,
-    secure: false,
-    sameSite: 'strict',
-  },
+  secret: process.env.SESSION_SECRET,
+  cookie: {},
   resave: false,
   saveUninitialized: true,
   store: new SequelizeStore({
-    db: sequelize
-  })
+    db: sequelize,
+  }),
 };
 
 app.use(session(sess));
 
-// Inform Express.js on which template engine to use
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
+// Routes
+app.use('/api', require('./controllers/api'));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+const PORT = process.env.PORT || 3001;
 
-app.use(routes);
-
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log('Now listening'));
+sequelize.sync({force: false}).then(() => {
+  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 });

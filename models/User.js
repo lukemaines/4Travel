@@ -1,12 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const sequelize = require('../config/connection');
 // referencing the trip table
-const Trip = require('./Trip'); 
+ 
 // function for checking the password with bcrypt for hash vs. typed password
 class User extends Model {
-    checkPassword(userPassword) {
-        return bcrypt.compareSync(userPassword, this.password); 
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password); 
     }
 }
 
@@ -22,35 +22,32 @@ User.init(
         username: {
             type: DataTypes.STRING,
             unique: true,
-            validate: {
-                allowNull: false,
-            },
+            allowNull: false,
         },
         email: {
             type: DataTypes.STRING,
             unique: true,
+            allowNull: false,
             validate: {
                 isEmail: true,
-                allowNull: false,
             },
         },
         password: {
             type: DataTypes.STRING,
-            validate: {
-                allowNull: false,
-            },
+            allowNull: false,
         },
 
     },
 // hooks for executing the hash on the password when it's either created or updated
     {   hooks: {
             beforeCreate: async (newUserData) => {
-                newUserData.password = await bcrypt.hash(newUserData.password, 10)   
-                return newUserData         
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);  
+                return newUserData;        
             },
             beforeUpdate: async (updatedUserData) => {
                 if (updatedUserData._changed.has('password')) {
-                    updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);}
+                    updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                }
                     return updatedUserData;
             }
     },

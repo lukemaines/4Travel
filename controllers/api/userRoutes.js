@@ -1,61 +1,51 @@
-const router = require('express').Router();
-const { User, Trip } = require('../../models');
+const express = require('express');
+const { User } = require('../../models');
 
-router.post('/', async (req, res) => {
+const router = express.Router();
+
+router.get('/user', (req, res) => {
+  res.render('user_profile');
+});
+
+router.post('/register', async (req, res) => {
+  const { username, email, password } = req.body;
+
   try {
-    const userData = await User.create(req.body);
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-
-      res.status(200).json(userData);
+    await User.create({
+      username,
+      email,
+      password,
     });
+    res.redirect('/api/users');
   } catch (err) {
-    res.status(400).json(err);
+    console.error(err);
+    res.render('user_profile', {
+      error: 'Failed to create user. Please try again.',
+    });
   }
 });
 
-router.post('/login', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const userData = await User.findOne({ where: { email: req.body.email } });
-
-    if (!userData) {
-      res
-        .status(400)
-        .json({ message: 'Incorrect email or password, please try again' });
-      return;
-    }
-
-    const validPassword = await userData.checkPassword(req.body.password);
-
-    if (!validPassword) {
-      res
-        .status(400)
-        .json({ message: 'Incorrect email or password, please try again' });
-      return;
-    }
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-      
-      res.json({ user: userData, message: 'You are now logged in!' });
+    const users = await User.findAll();
+    res.render('users', {
+      users: users.map(user => user.toJSON()),
     });
-
   } catch (err) {
-    res.status(400).json(err);
+    console.error(err);
+    res.render('users', {
+      error: 'Failed to load users. Please try again.',
+    });
   }
 });
 
-router.post('/logout', (req, res) => {
-  if (req.session.logged_in) {
-    req.session.destroy(() => {
-      res.status(204).end();
-    });
-  } else {
-    res.status(404).end();
+router.get('/login', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/');
+    return;
   }
+  res.render('login');
 });
 
 module.exports = router;
+
