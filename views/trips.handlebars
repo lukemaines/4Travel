@@ -11,20 +11,27 @@
   </header>
   <main>
     {{#if trips.length}}
-      <ul>
-        {{#each trips}}
-          <li data-trip-id="{{this.id}}" data-trip-destination="{{this.destination}}">
-            <h2>{{this.trip_name}}</h2>
-            <p>From: {{this.trip_origin}} to {{this.destination}}</p>
-            <p>Date: {{this.start_date}} - {{this.end_date}}</p>
-            <p>Budget: ${{this.budget}}</p>
-            <div id="poi-{{this.id}}">
-              <h3>Top Attractions</h3>
-              <ul></ul>
-            </div>
-          </li>
-        {{/each}}
-      </ul>
+      <div class="form-group">
+        <label for="tripDropdown">Select a Trip:</label>
+        <select id="tripDropdown">
+          <option value="">Select a trip</option>
+          {{#each trips}}
+            <option value="{{this.id}}" data-trip-origin="{{this.trip_origin}}" data-trip-destination="{{this.destination}}" data-trip-start-date="{{this.start_date}}" data-trip-end-date="{{this.end_date}}" data-trip-budget="{{this.budget}}">{{this.trip_name}}</option>
+          {{/each}}
+        </select>
+        <button id="showTripDetails">Show Details</button>
+      </div>
+      <div id="tripDetails" style="display:none;">
+        <h2>Trip Details</h2>
+        <p><strong>From:</strong> <span id="tripDetailsOrigin"></span></p>
+        <p><strong>To:</strong> <span id="tripDetailsDestination"></span></p>
+        <p><strong>Dates:</strong> <span id="tripDetailsDate"></span></p>
+        <p><strong>Budget:</strong> <span id="tripDetailsBudget"></span></p>
+        <div id="poi">
+          <h3>Top Attractions</h3>
+          <ul id="poiList"></ul>
+        </div>
+      </div>
     {{else}}
       <p>You have no trips planned.</p>
     {{/if}}
