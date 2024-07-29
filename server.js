@@ -23,7 +23,7 @@ app.set('view engine', 'handlebars');
 app.use(express.static(path.join(__dirname, 'public')));
 
 const sess = {
-  secret: process.env.SESSION_SECRET,
+  secret: 'supersecret',
   cookie: {},
   resave: false,
   saveUninitialized: true,
@@ -36,6 +36,10 @@ app.use(session(sess));
 
 // Routes
 app.use('/api', require('./controllers/api'));
+
+app.get('/', (req,res) => {
+  res.send('Welcome to the Home Page!')
+})
 
 const PORT = process.env.PORT || 3001;
 
