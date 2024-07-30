@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const sequelize = require('./config/connection');
 const exphbs = require('express-handlebars');
-const helpers = require('./utils/helpers');
+const helpers = require('./utils/helpers')
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 require('dotenv').config();
@@ -48,6 +48,6 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({force: false}).then(() => {
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 });

@@ -1,7 +1,11 @@
-<h1>Welcome, {{username}}!</h1>
+<h1>Welcome, {{user.username}}!</h1>
 <p>Your trips:</p>
+{{#if trips.length}}
 <ul>
   {{#each trips}}
     <li>{{this.name}} - {{this.date}}</li>
   {{/each}}
 </ul>
+{{else}}
+<p>You have no trips planned.</p>
+{{/if}}

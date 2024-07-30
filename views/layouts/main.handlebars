@@ -19,7 +19,9 @@
       <nav>
         <!-- Conditionally render login or logout links -->
         {{#if logged_in}}
-        <button class="no-button" id="logout">logout</button>
+        <form action="/api/users/logout" method="POST">
+          <button type="submit" class="no-button">logout</button>
+        </form>
         {{else}}
         <a href="/login">login</a>
         {{/if}}

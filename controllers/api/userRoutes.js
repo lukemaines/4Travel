@@ -1,22 +1,8 @@
 const express = require('express');
-const { User, Trip } = require('../../models');
+const { User } = require('../../models');
+
 const router = express.Router();
 
-// Register route
-router.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
-  try {
-    const newUser = await User.create({ username, email, password });
-    req.session.userId = newUser.id;
-    req.session.loggedIn = true;
-    res.redirect('/api/users/profile');
-  } catch (err) {
-    console.error(err);
-    res.render('register', { error: 'Failed to create user. Please try again.' });
-  }
-});
-
-// Login route
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -34,36 +20,55 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Render login page
 router.get('/login', (req, res) => {
   if (req.session.loggedIn) {
-    res.redirect('/');
-    return;
+    res.redirect('/api/users/profile');
+  } else {
+    res.render('login');
   }
-  res.render('login');
 });
 
-// Render register page
 router.get('/register', (req, res) => {
   res.render('register');
 });
 
-// Render user profile page
-router.get('/profile', async (req, res) => {
-  if (!req.session.loggedIn) {
-    res.redirect('/api/users/login');
-    return;
-  }
+router.post('/register', async (req, res) => {
+  const { username, email, password } = req.body;
 
   try {
-    const user = await User.findByPk(req.session.userId, {
-      include: [{ model: Trip, as: 'trips' }],
+    const user = await User.create({
+      username,
+      email,
+      password,
     });
-    res.render('user_profile', { user: user.get({ plain: true }) });
+    req.session.userId = user.id;
+    req.session.loggedIn = true;
+    res.redirect('/api/users/profile');
   } catch (err) {
     console.error(err);
-    res.redirect('/api/users/login');
+    res.render('register', {
+      error: 'Failed to create user. Please try again.',
+    });
   }
 });
+
+router.get('/profile', (req, res) => {
+  if (!req.session.loggedIn) {
+      res.redirect('/api/users/login');
+  } else {
+      res.render('user_profile');
+  }
+});
+
+router.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.redirect('/api/users/profile'); // Redirect to profile if there's an issue
+    }
+    res.redirect('/api/users/login'); // Redirect to login page after logout
+  });
+});
+
+
 
 module.exports = router;
