@@ -18,7 +18,7 @@ const hbs = exphbs.create({ helpers });
 // Set up Handlebars
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-// app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -38,9 +38,13 @@ app.use(session(sess));
 // Routes
 app.use('/api', require('./controllers/api'));
 
-app.get('/', (req,res) => {
-  res.send('Welcome to the Home Page!')
-})
+app.get('/', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/api/users/profile');
+  } else {
+    res.redirect('/api/users/login');
+  }
+});
 
 const PORT = process.env.PORT || 3001;
 
