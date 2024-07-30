@@ -1,5 +1,7 @@
-<h1>Welcome, {{user.username}}</h1>
-<p>Email: {{user.email}}</p>
-<form action="/api/users/logout" method="POST">
-  <button type="submit">Logout</button>
-</form>
+<h1>Welcome, {{username}}!</h1>
+<p>Your trips:</p>
+<ul>
+  {{#each trips}}
+    <li>{{this.name}} - {{this.date}}</li>
+  {{/each}}
+</ul>

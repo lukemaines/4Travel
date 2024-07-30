@@ -1,21 +1,22 @@
 const express = require('express');
-const { User } = require('../../models');
-
+const { User, Trip } = require('../../models');
 const router = express.Router();
 
-// Registration Route
+// Register route
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   try {
-    await User.create({ username, email, password });
-    res.redirect('/api/users/login');
+    const newUser = await User.create({ username, email, password });
+    req.session.userId = newUser.id;
+    req.session.loggedIn = true;
+    res.redirect('/api/users/profile');
   } catch (err) {
     console.error(err);
     res.render('register', { error: 'Failed to create user. Please try again.' });
   }
 });
 
-// Login Route
+// Login route
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -33,40 +34,36 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Route to Render Login Page
+// Render login page
 router.get('/login', (req, res) => {
   if (req.session.loggedIn) {
-    res.redirect('/api/users/profile');
+    res.redirect('/');
     return;
   }
   res.render('login');
 });
 
-// Route to Render Registration Page
+// Render register page
 router.get('/register', (req, res) => {
   res.render('register');
 });
 
-// Profile Route
+// Render user profile page
 router.get('/profile', async (req, res) => {
   if (!req.session.loggedIn) {
     res.redirect('/api/users/login');
     return;
   }
+
   try {
-    const user = await User.findByPk(req.session.userId);
-    res.render('user_profile', { user: user.toJSON() });
+    const user = await User.findByPk(req.session.userId, {
+      include: [{ model: Trip, as: 'trips' }],
+    });
+    res.render('user_profile', { user: user.get({ plain: true }) });
   } catch (err) {
     console.error(err);
     res.redirect('/api/users/login');
   }
-});
-
-// Logout Route
-router.post('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/api/users/login');
-  });
 });
 
 module.exports = router;
