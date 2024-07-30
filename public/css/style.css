@@ -5,12 +5,12 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  background-color: #F6E6CB;
   color: #333;
 }
 
 header {
-  background-color: #4CAF50;
+  background-color: #A0937D;
   color: white;
   padding: 1em 0;
   text-align: center;
@@ -32,6 +32,7 @@ main {
 .form-group label {
   display: block;
   margin-bottom: 0.5em;
+  color: #A0937D;
 }
 
 .form-group input,
@@ -39,19 +40,20 @@ main {
   width: 100%;
   padding: 0.5em;
   margin: 0.5em 0;
-  border: 1px solid #ccc;
+  border: 1px solid #A0937D;
   border-radius: 4px;
+  background-color: #E7D4B5;
 }
 
 .form-group button {
-  background-color: #4CAF50;
+  background-color: #B6C7AA;
   color: white;
   border: none;
   cursor: pointer;
 }
 
 .form-group button:hover {
-  background-color: #45a049;
+  background-color: #A0937D;
 }
 
 /* Error message */
@@ -70,7 +72,7 @@ li {
   background-color: white;
   margin-bottom: 1em;
   padding: 1em;
-  border: 1px solid #ccc;
+  border: 1px solid #A0937D;
   border-radius: 4px;
 }
 
@@ -80,13 +82,16 @@ li h2 {
 
 li p {
   margin: 0.5em 0;
+  color: #A0937D;
 }
 
 li div h3 {
   margin-top: 1em;
+  color: #A0937D;
 }
 
 li div ul {
   list-style-type: disc;
   padding-left: 1.5em;
+  color: #A0937D;
 }
