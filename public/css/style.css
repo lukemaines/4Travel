@@ -1,27 +1,75 @@
-/* header, .project:not(:last-child) {
-  border-bottom: 1px solid #ccc;
+/* styles.css */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa; /* Adjust the background color as needed */
 }
 
-.no-button {
-  background: none;
-  border: none;
+.logo h1 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.nav-links {
+  list-style: none;
   padding: 0;
-  cursor: pointer;
-  color: #1b89bc;
-  text-decoration: none;
-  font-size: 100%;
+  margin: 0;
+  display: flex;
 }
 
-.no-button:hover {
-  color: #065b83;
+.nav-links li {
+  margin: 0 15px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #000; /* Adjust the text color as needed */
+  font-weight: bold;
+}
+
+.nav-links a:hover {
   text-decoration: underline;
 }
 
-.dollar-amount {
-  color: #056605;
+.login a {
+  text-decoration: none;
+  color: #000; /* Adjust the text color as needed */
   font-weight: bold;
-  margin-left: -5px;
-} */
+}
+
+.login a:hover {
+  text-decoration: underline;
+}
+/* styles.css */
+.hero {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hero-text h2 {
+  font-size: 3em;
+  margin: 0;
+}
+
+.hero-text p {
+  font-size: 1.5em;
+  margin: 0;
+}
 
 body {
   font-family: Arial, sans-serif;

@@ -3,7 +3,7 @@ const router = express.Router();
 const { City } = require('../models');
 
 router.get('/', async (req, res) => {
-  res.render('home');
+  res.render('main');
 });
 
 router.get('/results', async (req, res) => {
