@@ -1,19 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Login</title>
-</head>
-<body>
-  <h1>Login</h1>
-  {{#if error}}
-    <p>{{error}}</p>
-  {{/if}}
-  <form action="/api/users/login" method="POST">
-    <label for="email">Email:</label>
-    <input type="email" name="email" required>
+<form action="/api/users/login" method="POST">
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+  </div>
+  <div>
     <label for="password">Password:</label>
-    <input type="password" name="password" required>
+    <input type="password" id="password" name="password" required>
+  </div>
+  <div>
     <button type="submit">Login</button>
-  </form>
-</body>
-</html>
+  </div>
+</form>
