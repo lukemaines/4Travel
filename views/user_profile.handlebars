@@ -1,8 +1,8 @@
 <h1>Welcome, {{user.username}}!</h1>
 <p>Your trips:</p>
-{{#if trips.length}}
+{{#if user.trips.length}}
 <ul>
-  {{#each trips}}
+  {{#each user.trips}}
     <li>{{this.name}} - {{this.date}}</li>
   {{/each}}
 </ul>

@@ -13,6 +13,7 @@ router.post('/login', async (req, res) => {
     }
     req.session.userId = user.id;
     req.session.loggedIn = true;
+    req.session.username = user.username;
     res.redirect('/api/users/profile');
   } catch (err) {
     console.error(err);
@@ -43,6 +44,7 @@ router.post('/register', async (req, res) => {
     });
     req.session.userId = user.id;
     req.session.loggedIn = true;
+    req.session.username = user.username;
     res.redirect('/api/users/profile');
   } catch (err) {
     console.error(err);
@@ -52,23 +54,26 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.get('/profile', (req, res) => {
+router.get('/profile', async (req, res) => {
   if (!req.session.loggedIn) {
-      res.redirect('/api/users/login');
+    res.redirect('/api/users/login');
   } else {
-      res.render('user_profile');
+    const user = await User.findByPk(req.session.userId);
+    res.render('user_profile', {
+      user: user ? user.get({ plain: true }) : {},
+      logged_in: req.session.loggedIn,
+    });
   }
 });
 
 router.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
-      return res.redirect('/api/users/profile'); // Redirect to profile if there's an issue
+      return res.redirect('/api/users/profile');
     }
-    res.redirect('/api/users/login'); // Redirect to login page after logout
+    res.clearCookie('connect.sid');
+    res.redirect('/api/users/login');
   });
 });
-
-
 
 module.exports = router;
