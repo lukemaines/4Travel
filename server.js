@@ -10,6 +10,7 @@ const app = express();
 
 // Bodyparser
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 const hbs = exphbs.create({ helpers });
 // Set up Handlebars

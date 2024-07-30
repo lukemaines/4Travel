@@ -11,26 +11,30 @@
   </header>
   <main>
     {{#if trips.length}}
-      <div class="form-group">
-        <label for="tripDropdown">Select a Trip:</label>
-        <select id="tripDropdown">
-          <option value="">Select a trip</option>
-          {{#each trips}}
-            <option value="{{this.id}}" data-trip-origin="{{this.trip_origin}}" data-trip-destination="{{this.destination}}" data-trip-start-date="{{this.start_date}}" data-trip-end-date="{{this.end_date}}" data-trip-budget="{{this.budget}}">{{this.trip_name}}</option>
-          {{/each}}
-        </select>
-        <button id="showTripDetails">Show Details</button>
-      </div>
-      <div id="tripDetails" style="display:none;">
-        <h2>Trip Details</h2>
-        <p><strong>From:</strong> <span id="tripDetailsOrigin"></span></p>
-        <p><strong>To:</strong> <span id="tripDetailsDestination"></span></p>
-        <p><strong>Dates:</strong> <span id="tripDetailsDate"></span></p>
+      <select id="tripDropdown">
+        {{#each trips}}
+          <option 
+            value="{{this.id}}"
+            data-trip-origin="{{this.trip_origin}}"
+            data-trip-destination="{{this.destination}}"
+            data-trip-start-date="{{this.start_date}}"
+            data-trip-end-date="{{this.end_date}}"
+            data-trip-budget="{{this.budget}}">
+            {{this.trip_name}}
+          </option>
+        {{/each}}
+      </select>
+      <button id="showTripDetails">Show Details</button>
+      
+      <div id="tripDetails" style="display: none;">
+        <p><strong>Origin:</strong> <span id="tripDetailsOrigin"></span></p>
+        <p><strong>Destination:</strong> <span id="tripDetailsDestination"></span></p>
+        <p><strong>Date:</strong> <span id="tripDetailsDate"></span></p>
         <p><strong>Budget:</strong> <span id="tripDetailsBudget"></span></p>
-        <div id="poi">
-          <h3>Top Attractions</h3>
-          <ul id="poiList"></ul>
-        </div>
+        <h3>Top Attractions</h3>
+        <ul id="poiList"></ul>
+        <h3>Cost of Living</h3>
+        <div id="results"></div> <!-- Ensure this div exists -->
       </div>
     {{else}}
       <p>You have no trips planned.</p>

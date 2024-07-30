@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Trip details displayed');
   
       await getAttractions(tripDestination, tripId);
+      await getCostOfLiving(tripDestination);
     } else {
       document.getElementById('tripDetails').style.display = 'none';
       console.log('No trip selected, hiding details');
@@ -69,6 +70,46 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(error);
       const poiList = document.getElementById('poiList');
       poiList.innerHTML = '<li>Error fetching attractions. Please try again later.</li>';
+    }
+  }
+  
+  async function getCostOfLiving(destination) {
+    console.log('Fetching cost of living for:', destination);
+    try {
+      console.log('Sending request to /api/trips/cost-of-living with destination:', destination);
+      const response = await fetch(`/api/trips/cost-of-living`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ destination }), // Ensure destination is passed correctly
+      });
+  
+      console.log('Request sent. Awaiting response...');
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      const result = await response.json();
+      console.log('Cost of living data:', result);
+  
+      const resultsDiv = document.getElementById("results");
+      if (resultsDiv) {
+        resultsDiv.innerHTML = `<h3>Meals</h3>
+                                <ul>${result.meals.map(item => `<li>${item.item_name}: ${item.average_price} ${item.currency}</li>`).join("")}</ul>
+                                <h3>Transportation</h3>
+                                <ul>${result.transportation.map(item => `<li>${item.item_name}: ${item.average_price} ${item.currency}</li>`).join("")}</ul>`;
+      } else {
+        console.error('Results div not found');
+      }
+    } catch (error) {
+      console.error('Error in getCostOfLiving:', error);
+      const resultsDiv = document.getElementById("results");
+      if (resultsDiv) {
+        resultsDiv.innerHTML = '<p>Error fetching cost of living data. Please try again later.</p>';
+      } else {
+        console.error('Results div not found');
+      }
     }
   }
   
