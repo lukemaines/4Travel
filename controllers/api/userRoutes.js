@@ -1,61 +1,79 @@
-const router = require('express').Router();
+const express = require('express');
 const { User } = require('../../models');
 
-router.post('/', async (req, res) => {
+const router = express.Router();
+
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const userData = await User.create(req.body);
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-
-      res.status(200).json(userData);
-    });
+    const user = await User.findOne({ where: { email } });
+    if (!user || !user.checkPassword(password)) {
+      res.render('login', { error: 'Incorrect email or password. Please try again.' });
+      return;
+    }
+    req.session.userId = user.id;
+    req.session.loggedIn = true;
+    req.session.username = user.username;
+    res.redirect('/api/users/profile');
   } catch (err) {
-    res.status(400).json(err);
+    console.error(err);
+    res.render('login', { error: 'Failed to login. Please try again.' });
   }
 });
 
-router.post('/login', async (req, res) => {
+router.get('/login', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/api/users/profile');
+  } else {
+    res.render('login');
+  }
+});
+
+router.get('/register', (req, res) => {
+  res.render('register');
+});
+
+router.post('/register', async (req, res) => {
+  const { username, email, password } = req.body;
+
   try {
-    const userData = await User.findOne({ where: { email: req.body.email } });
-
-    if (!userData) {
-      res
-        .status(400)
-        .json({ message: 'Incorrect email or password, please try again' });
-      return;
-    }
-
-    const validPassword = await userData.checkPassword(req.body.password);
-
-    if (!validPassword) {
-      res
-        .status(400)
-        .json({ message: 'Incorrect email or password, please try again' });
-      return;
-    }
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-      
-      res.json({ user: userData, message: 'You are now logged in!' });
+    const user = await User.create({
+      username,
+      email,
+      password,
     });
-
+    req.session.userId = user.id;
+    req.session.loggedIn = true;
+    req.session.username = user.username;
+    res.redirect('/api/users/profile');
   } catch (err) {
-    res.status(400).json(err);
+    console.error(err);
+    res.render('register', {
+      error: 'Failed to create user. Please try again.',
+    });
+  }
+});
+
+router.get('/profile', async (req, res) => {
+  if (!req.session.loggedIn) {
+    res.redirect('/api/users/login');
+  } else {
+    const user = await User.findByPk(req.session.userId);
+    res.render('user_profile', {
+      user: user ? user.get({ plain: true }) : {},
+      logged_in: req.session.loggedIn,
+    });
   }
 });
 
 router.post('/logout', (req, res) => {
-  if (req.session.logged_in) {
-    req.session.destroy(() => {
-      res.status(204).end();
-    });
-  } else {
-    res.status(404).end();
-  }
+  req.session.destroy(err => {
+    if (err) {
+      return res.redirect('/api/users/profile');
+    }
+    res.clearCookie('connect.sid');
+    res.redirect('/api/users/login');
+  });
 });
 
 module.exports = router;
