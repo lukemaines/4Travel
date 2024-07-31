@@ -1,0 +1,13 @@
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        {{#if logged_in}}
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/plan-trip">Plan Your Trip</a></li>
+            <li><a href="/api/trips">Trips Dashboard</a></li>
+        {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+        {{/if}}
+    </ul>
+</nav>

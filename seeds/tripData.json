@@ -1,0 +1,26 @@
+[
+  {
+    "trip_name": "Spring Break",
+    "trip_origin": "New York, USA",
+    "destination": "Miami, USA",
+    "start_date": "2024-03-15",
+    "end_date": "2024-03-22",
+    "budget": 1500.00
+  },
+  {
+    "trip_name": "Summer Vacation",
+    "trip_origin": "San Francisco, USA",
+    "destination": "Honolulu, USA",
+    "start_date": "2024-07-01",
+    "end_date": "2024-07-10",
+    "budget": 3000.00
+  },
+  {
+    "trip_name": "Christmas Holiday",
+    "trip_origin": "Chicago, USA",
+    "destination": "New York, USA",
+    "start_date": "2024-12-24",
+    "end_date": "2024-12-30",
+    "budget": 2000.00
+  }
+]
