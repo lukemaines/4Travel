@@ -2,6 +2,9 @@
 
 4Travel is a travel planning application that allows users to register, log in, plan trips, and view planned trips. Users can also edit or delete their trips, view top attractions at their destination, and get information about the cost of living.
 
+## Application deployed to render
+https://fourtravel.onrender.com
+
 ## Features
 
 * User Registration
