@@ -165,4 +165,46 @@ router.post('/cost-of-living', async (req, res) => {
   }
 });
 
+// Edit a trip
+router.put('/:id', withAuth, async (req, res) => {
+  try {
+    const trip = await Trip.update(req.body, {
+      where: {
+        id: req.params.id,
+        user_id: req.session.user_id,
+      },
+    });
+
+    if (!trip[0]) {
+      res.status(404).json({ message: 'No trip found with this id!' });
+      return;
+    }
+
+    res.status(200).json(trip);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Delete a trip
+router.delete('/:id', withAuth, async (req, res) => {
+  try {
+    const trip = await Trip.destroy({
+      where: {
+        id: req.params.id,
+        user_id: req.session.user_id,
+      },
+    });
+
+    if (!trip) {
+      res.status(404).json({ message: 'No trip found with this id!' });
+      return;
+    }
+
+    res.status(200).json(trip);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;

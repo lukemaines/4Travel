@@ -1,8 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
     const showTripDetailsButton = document.getElementById('showTripDetails');
+    const editTripButton = document.getElementById('editTrip');
+    const deleteTripButton = document.getElementById('deleteTrip');
+    const editForm = document.getElementById('edit-form');
+
     if (showTripDetailsButton) {
         showTripDetailsButton.addEventListener('click', handleTripSelection);
         console.log('Event listener added to the Show Details button');
+    }
+
+    if (editTripButton) {
+        editTripButton.addEventListener('click', handleEditTrip);
+        console.log('Event listener added to the Edit button');
+    }
+
+    if (deleteTripButton) {
+        deleteTripButton.addEventListener('click', handleDeleteTrip);
+        console.log('Event listener added to the Delete button');
+    }
+
+    if (editForm) {
+        editForm.addEventListener('submit', handleEditFormSubmit);
+        console.log('Event listener added to the Edit Form submit button');
     }
 
     // Check if user is logged in and display their trips
@@ -41,6 +60,14 @@ async function handleTripSelection() {
 
         tripDetails.style.display = 'block';
         console.log('Trip details displayed');
+
+        // Store the current trip data for editing
+        document.getElementById('edit_trip_origin').value = tripOrigin;
+        document.getElementById('edit_destination').value = tripDestination;
+        document.getElementById('edit_start_date').value = tripStartDate.split('T')[0]; // Adjust for date input
+        document.getElementById('edit_end_date').value = tripEndDate.split('T')[0]; // Adjust for date input
+        document.getElementById('edit_budget').value = tripBudget;
+        document.getElementById('edit-form').dataset.tripId = tripId;
 
         await getAttractions(tripDestination, tripId);
         await getCostOfLiving(tripDestination);
@@ -150,5 +177,56 @@ async function fetchUserTrips() {
         console.log('User trips loaded into dropdown');
     } catch (error) {
         console.error('Error fetching user trips:', error);
+    }
+}
+
+async function handleEditTrip() {
+    const tripDetails = document.getElementById('tripDetails');
+    const editTripForm = document.getElementById('editTripForm');
+
+    tripDetails.style.display = 'none';
+    editTripForm.style.display = 'block';
+}
+
+async function handleDeleteTrip() {
+    const tripDropdown = document.getElementById('tripDropdown');
+    const selectedOption = tripDropdown.options[tripDropdown.selectedIndex];
+    const tripId = selectedOption.value;
+
+    const response = await fetch(`/api/trips/${tripId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (response.ok) {
+        alert('Trip deleted successfully!');
+        location.reload();
+    } else {
+        alert('Failed to delete trip.');
+    }
+}
+
+async function handleEditFormSubmit(event) {
+    event.preventDefault();
+
+    const tripId = event.target.dataset.tripId;
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+
+    const response = await fetch(`/api/trips/${tripId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+        alert('Trip updated successfully!');
+        location.reload();
+    } else {
+        alert('Failed to update trip.');
     }
 }
