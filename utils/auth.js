@@ -1,8 +1,9 @@
-module.exports = {
-  ensureAuthenticated: function (req, res, next) {
-    if (req.session.user) {
-      return next();
-    }
-    res.redirect('/users/login');
-  },
+const withAuth = (req, res, next) => {
+  if (!req.session.logged_in) {
+      res.redirect('/login');
+  } else {
+      next();
+  }
 };
+
+module.exports = withAuth;
