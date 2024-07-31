@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Plan App</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <header>
         <h1>Welcome to the Travel Plan App</h1>
@@ -15,8 +14,7 @@
     </header>
     <section class="hero">
         <div class="hero-image">
-            <img src="https://www.coindesk.com/resizer/z9ixf__1a6JqCUuf--f2Kk6JG-8=/1056x707/filters:quality(80):format(jpg)/cloudfront-us-east-1.images.arcpublishing.com/coindesk/2XKI4NL66ZEQ5MFKCRWRAWKMKE.jpg"
-                alt="Travel" loading="lazy" />
+            <img src="https://www.coindesk.com/resizer/z9ixf__1a6JqCUuf--f2Kk6JG-8=/1056x707/filters:quality(80):format(jpg)/cloudfront-us-east-1.images.arcpublishing.com/coindesk/2XKI4NL66ZEQ5MFKCRWRAWKMKE.jpg" alt="Travel" loading="lazy" />
         </div>
         <div class="hero-text">
             <h2>For your travel plans</h2>
@@ -27,12 +25,16 @@
         {{#if logged_in}}
         <h2>Your Trips</h2>
         {{#if trips.length}}
-        <ul>
+        <div class="cards">
             {{#each trips}}
-            <li>{{this.trip_name}} from {{this.trip_origin}} to {{this.destination}} (Date: {{formatDate
-                this.start_date}} - {{formatDate this.end_date}})</li>
+            <div class="card">
+                <h3>{{this.trip_name}}</h3>
+                <p>From: {{this.trip_origin}}</p>
+                <p>To: {{this.destination}}</p>
+                <p>Date: {{formatDate this.start_date}} - {{formatDate this.end_date}}</p>
+            </div>
             {{/each}}
-        </ul>
+        </div>
         {{else}}
         <p>You have no trips planned.</p>
         {{/if}}
@@ -41,5 +43,4 @@
         {{/if}}
     </main>
 </body>
-
 </html>
